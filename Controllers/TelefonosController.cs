@@ -48,7 +48,7 @@ namespace personapi_dotnet.Controllers
         }
 
         // GET: Telefonos/Create
-        [Route("Telefonos/Create")]
+        [HttpGet("Telefonos/Create")]
         public IActionResult Create()
         {
             ViewData["Duenio"] = new SelectList(_context.Personas, "Cc", "Cc");
@@ -58,8 +58,7 @@ namespace personapi_dotnet.Controllers
         // POST: Telefonos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Route("Telefonos/Create")]
-        [HttpPost]
+        [HttpPost("Telefonos/Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Num,Oper,Duenio")] TelefonoViewModel model)
         {

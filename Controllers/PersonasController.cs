@@ -47,7 +47,7 @@ namespace personapi_dotnet.Controllers
         }
 
         // GET: Personas/Create
-        [Route("Personas/Create")]
+        [HttpGet("Personas/Create")]
         public IActionResult Create()
         {
             return View();
@@ -56,8 +56,7 @@ namespace personapi_dotnet.Controllers
         // POST: Personas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Route("Personas/Create")]
-        [HttpPost]
+        [HttpPost("Personas/Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Cc,Nombre,Apellido,Genero,Edad")] Persona persona)
         {

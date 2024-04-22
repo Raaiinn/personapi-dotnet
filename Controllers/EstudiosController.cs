@@ -50,7 +50,7 @@ namespace personapi_dotnet.Controllers
         }
 
         // GET: Estudios/Create
-        [Route("Estudios/Create")]
+        [HttpGet("Estudios/Create")]
         public IActionResult Create()
         {
             ViewData["CcPer"] = new SelectList(_context.Personas, "Cc", "Cc");
@@ -61,8 +61,7 @@ namespace personapi_dotnet.Controllers
         // POST: Estudios/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Route("Estudios/Create")]
-        [HttpPost]
+        [HttpPost("Estudios/Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdProf,CcPer,Fecha,Univer")] EstudiosViewModel model)
         {

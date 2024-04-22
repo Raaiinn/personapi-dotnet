@@ -62,6 +62,7 @@ C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\NuGet.Packaging.dl
 C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\NuGet.ProjectModel.dll
 C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\NuGet.Protocol.dll
 C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\NuGet.Versioning.dll
+C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\Microsoft.Docs.Samples.RouteInfo.dll
 C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -256,4 +257,3 @@ C:\Users\braya\source\repos\personapi-dotnet\obj\Debug\net8.0\refint\personapi-d
 C:\Users\braya\source\repos\personapi-dotnet\obj\Debug\net8.0\personapi-dotnet.pdb
 C:\Users\braya\source\repos\personapi-dotnet\obj\Debug\net8.0\personapi-dotnet.genruntimeconfig.cache
 C:\Users\braya\source\repos\personapi-dotnet\obj\Debug\net8.0\ref\personapi-dotnet.dll
-C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\Microsoft.Docs.Samples.RouteInfo.dll
