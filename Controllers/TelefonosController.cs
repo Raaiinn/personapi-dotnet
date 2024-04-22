@@ -5,19 +5,27 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using personapi_dotnet.Controllers.Api;
 using personapi_dotnet.Models.Entities;
+using personapi_dotnet.Models.ViewModels;
 
 namespace personapi_dotnet.Controllers
 {
-    public class TelefonosController(PersonaDbContext context) : Controller
+    public class TelefonosController : Controller
     {
-        private readonly PersonaDbContext _context = context;
+        private readonly PersonaDbContext _context;
+        private readonly ApiTelefonoController _controller;
 
-        // GET: Telefonos
+        public TelefonosController(PersonaDbContext context, ApiTelefonoController controller)
+        {
+            _context = context;
+            _controller = controller;
+        }
+
+        // GET: Telefonoes
         public async Task<IActionResult> Index()
         {
-            var personaDbContext = _context.Telefonos.Include(t => t.DuenioNavigation);
-            return View(await personaDbContext.ToListAsync());
+            return View(await _controller.GetTelefonos());
         }
 
         // GET: Telefonos/Details/5
@@ -40,6 +48,7 @@ namespace personapi_dotnet.Controllers
         }
 
         // GET: Telefonos/Create
+        [Route("Telefonos/Create")]
         public IActionResult Create()
         {
             ViewData["Duenio"] = new SelectList(_context.Personas, "Cc", "Cc");
@@ -49,21 +58,27 @@ namespace personapi_dotnet.Controllers
         // POST: Telefonos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Route("Telefonos/Create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Num,Oper,Duenio")] Telefono telefono)
+        public async Task<IActionResult> Create([Bind("Num,Oper,Duenio")] TelefonoViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(telefono);
-                await _context.SaveChangesAsync();
+                var telefono = new Telefono()
+                {
+                    Num = model.Num,
+                    Duenio = model.Duenio,
+                    Oper = model.Oper
+                };
+                await _controller.PostTelefono(telefono);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Duenio"] = new SelectList(_context.Personas, "Cc", "Cc", telefono.Duenio);
-            return View(telefono);
+            ViewData["Duenio"] = new SelectList(_context.Personas, "Cc", "Cc", model.Duenio);
+            return View(model);
         }
 
-        // GET: Telefonos/Edit/5
+        // GET: Telefonoes/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -80,14 +95,14 @@ namespace personapi_dotnet.Controllers
             return View(telefono);
         }
 
-        // POST: Telefonos/Edit/5
+        // POST: Telefonoes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Num,Oper,Duenio")] Telefono telefono)
+        public async Task<IActionResult> Edit(string id, [Bind("Num,Oper,Duenio")] TelefonoViewModel model)
         {
-            if (id != telefono.Num)
+            if (id != model.Num)
             {
                 return NotFound();
             }
@@ -96,12 +111,17 @@ namespace personapi_dotnet.Controllers
             {
                 try
                 {
-                    _context.Update(telefono);
-                    await _context.SaveChangesAsync();
+                    var telefono = new Telefono()
+                    {
+                        Num = model.Num,
+                        Duenio = model.Duenio,
+                        Oper = model.Oper
+                    };
+                    await _controller.PutTelefono(model.Num, telefono);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TelefonoExists(telefono.Num))
+                    if (!TelefonoExists(model.Num))
                     {
                         return NotFound();
                     }
@@ -112,11 +132,11 @@ namespace personapi_dotnet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Duenio"] = new SelectList(_context.Personas, "Cc", "Cc", telefono.Duenio);
-            return View(telefono);
+            ViewData["Duenio"] = new SelectList(_context.Personas, "Cc", "Cc", model.Duenio);
+            return View(model);
         }
 
-        // GET: Telefonos/Delete/5
+        // GET: Telefonoes/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -135,24 +155,19 @@ namespace personapi_dotnet.Controllers
             return View(telefono);
         }
 
-        // POST: Telefonos/Delete/5
+        // POST: Telefonoes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var telefono = await _context.Telefonos.FindAsync(id);
-            if (telefono != null)
-            {
-                _context.Telefonos.Remove(telefono);
-            }
 
-            await _context.SaveChangesAsync();
+            await _controller.DeleteTelefono(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool TelefonoExists(string id)
         {
-            return _context.Telefonos.Any(e => e.Num == id);
+            return _controller.TelefonoExists(id);
         }
     }
 }

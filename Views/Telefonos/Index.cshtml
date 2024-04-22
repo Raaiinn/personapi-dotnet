@@ -6,32 +6,40 @@
 
 <h1>Telefonos</h1>
 
-<a asp-action="Create" class="btn btn-primary">Crear nuevo telefono</a>
+<p>
+    <a asp-action="Create" class="btn btn-success">Registrar telefono</a>
+</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Oper)
+                Numero
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DuenioNavigation)
+                Operador
             </th>
-            <th></th>
+            <th>
+                Dueño
+            </th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.Num)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Oper)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DuenioNavigation.Cc)
+                @Html.DisplayFor(modelItem => item.DuenioNavigation.Nombre)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Num">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Num">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Num">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Num" class="btn btn-primary">Editar</a> 
+                <a asp-action="Details" asp-route-id="@item.Num" class="btn btn-info">Detalles</a> 
+                <a asp-action="Delete" asp-route-id="@item.Num" class="btn btn-danger">Eliminar</a>
             </td>
         </tr>
 }

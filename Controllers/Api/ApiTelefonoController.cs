@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using personapi_dotnet.Models.Entities;
 
-namespace personapi_dotnet.Controllers
+namespace personapi_dotnet.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,10 +22,11 @@ namespace personapi_dotnet.Controllers
 
         // GET: api/ApiTelefono
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Telefono>>> GetTelefonos()
+        public async Task<List<Telefono>> GetTelefonos()
         {
-            return await _context.Telefonos.ToListAsync();
-        }
+            var personaDbContext = _context.Telefonos.Include(t => t.DuenioNavigation);
+            return (await personaDbContext.ToListAsync());
+        }  
 
         // GET: api/ApiTelefono/5
         [HttpGet("{id}")]
@@ -77,24 +78,13 @@ namespace personapi_dotnet.Controllers
         [HttpPost]
         public async Task<ActionResult<Telefono>> PostTelefono(Telefono telefono)
         {
-            _context.Telefonos.Add(telefono);
-            try
+            if (telefono != null)
             {
+                _context.Telefonos.Add(telefono);
                 await _context.SaveChangesAsync();
+                return Ok(telefono);
             }
-            catch (DbUpdateException)
-            {
-                if (TelefonoExists(telefono.Num))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetTelefono", new { id = telefono.Num }, telefono);
+            return BadRequest();
         }
 
         // DELETE: api/ApiTelefono/5
@@ -113,7 +103,8 @@ namespace personapi_dotnet.Controllers
             return NoContent();
         }
 
-        private bool TelefonoExists(string id)
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public bool TelefonoExists(string id)
         {
             return _context.Telefonos.Any(e => e.Num == id);
         }

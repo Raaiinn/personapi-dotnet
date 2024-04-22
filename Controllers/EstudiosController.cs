@@ -5,25 +5,34 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using personapi_dotnet.Controllers.Api;
 using personapi_dotnet.Models.Entities;
+using personapi_dotnet.Models.ViewModels;
 
 namespace personapi_dotnet.Controllers
 {
-    public class EstudiosController(PersonaDbContext context) : Controller
+    public class EstudiosController : Controller
     {
-        private readonly PersonaDbContext _context = context;
+        private readonly PersonaDbContext _context;
+        private readonly ApiEstudioController _controller;
+
+        public EstudiosController(PersonaDbContext context, ApiEstudioController controller)
+        {
+            _context = context;
+            _controller = controller;
+        }
 
         // GET: Estudios
         public async Task<IActionResult> Index()
         {
-            var personaDbContext = _context.Estudios.Include(e => e.CcPerNavigation).Include(e => e.IdProfNavigation);
-            return View(await personaDbContext.ToListAsync());
+            return View(await _controller.GetEstudios());
         }
 
         // GET: Estudios/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet("{IdProf}/{CcPer}")]
+        public async Task<IActionResult> Details(int? IdProf, int? CcPer)
         {
-            if (id == null)
+            if (IdProf == null || CcPer == null)
             {
                 return NotFound();
             }
@@ -31,7 +40,7 @@ namespace personapi_dotnet.Controllers
             var estudio = await _context.Estudios
                 .Include(e => e.CcPerNavigation)
                 .Include(e => e.IdProfNavigation)
-                .FirstOrDefaultAsync(m => m.IdProf == id);
+                .FirstOrDefaultAsync(m => m.IdProf == IdProf && m.CcPer == CcPer);
             if (estudio == null)
             {
                 return NotFound();
@@ -41,6 +50,7 @@ namespace personapi_dotnet.Controllers
         }
 
         // GET: Estudios/Create
+        [Route("Estudios/Create")]
         public IActionResult Create()
         {
             ViewData["CcPer"] = new SelectList(_context.Personas, "Cc", "Cc");
@@ -51,30 +61,39 @@ namespace personapi_dotnet.Controllers
         // POST: Estudios/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Route("Estudios/Create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdProf,CcPer,Fecha,Univer")] Estudio estudio)
+        public async Task<IActionResult> Create([Bind("IdProf,CcPer,Fecha,Univer")] EstudiosViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(estudio);
-                await _context.SaveChangesAsync();
+                var estudio = new Estudio()
+                {
+                    IdProf = model.IdProf,
+                    CcPer = model.CcPer,
+                    Fecha = model.Fecha,
+                    Univer = model.Univer
+                };
+
+                await _controller.PostEstudio(estudio);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CcPer"] = new SelectList(_context.Personas, "Cc", "Cc", estudio.CcPer);
-            ViewData["IdProf"] = new SelectList(_context.Profesions, "Id", "Id", estudio.IdProf);
-            return View(estudio);
+            ViewData["CcPer"] = new SelectList(_context.Personas, "Cc", "Cc", model.CcPer);
+            ViewData["IdProf"] = new SelectList(_context.Profesions, "Id", "Id", model.IdProf);
+            return View(model);
         }
 
         // GET: Estudios/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet("edit/{CcPer}/{IdProf}")]
+        public async Task<IActionResult> Edit(int? IdProf, int? CcPer)
         {
-            if (id == null)
+            if (IdProf == null || CcPer == null)
             {
                 return NotFound();
             }
 
-            var estudio = await _context.Estudios.FindAsync(id);
+            var estudio = await _context.Estudios.FindAsync(IdProf, CcPer);
             if (estudio == null)
             {
                 return NotFound();
@@ -87,11 +106,11 @@ namespace personapi_dotnet.Controllers
         // POST: Estudios/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("edit/{IdProf}/{CcPer}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdProf,CcPer,Fecha,Univer")] Estudio estudio)
+        public async Task<IActionResult> Edit(int IdProf, int CcPer, [Bind("IdProf,CcPer,Fecha,Univer")] EstudiosViewModel model)
         {
-            if (id != estudio.IdProf)
+            if (IdProf != model.IdProf || CcPer != model.CcPer)
             {
                 return NotFound();
             }
@@ -100,12 +119,18 @@ namespace personapi_dotnet.Controllers
             {
                 try
                 {
-                    _context.Update(estudio);
-                    await _context.SaveChangesAsync();
+                    var estudio = new Estudio()
+                    {
+                        IdProf = model.IdProf,
+                        CcPer = model.CcPer,
+                        Fecha = model.Fecha,
+                        Univer = model.Univer
+                    };
+                    await _controller.PutEstudio(IdProf, CcPer, estudio);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EstudioExists(estudio.IdProf))
+                    if (!EstudioExists(model.IdProf, model.CcPer))
                     {
                         return NotFound();
                     }
@@ -116,15 +141,16 @@ namespace personapi_dotnet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CcPer"] = new SelectList(_context.Personas, "Cc", "Cc", estudio.CcPer);
-            ViewData["IdProf"] = new SelectList(_context.Profesions, "Id", "Id", estudio.IdProf);
-            return View(estudio);
+            ViewData["CcPer"] = new SelectList(_context.Personas, "Cc", "Cc", model.CcPer);
+            ViewData["IdProf"] = new SelectList(_context.Profesions, "Id", "Id", model.IdProf);
+            return View(model);
         }
 
         // GET: Estudios/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet("delete/{CcPer}/{IdProf}")]
+        public async Task<IActionResult> Delete(int? IdProf, int? CcPer)
         {
-            if (id == null)
+            if (IdProf == null || CcPer == null)
             {
                 return NotFound();
             }
@@ -132,7 +158,7 @@ namespace personapi_dotnet.Controllers
             var estudio = await _context.Estudios
                 .Include(e => e.CcPerNavigation)
                 .Include(e => e.IdProfNavigation)
-                .FirstOrDefaultAsync(m => m.IdProf == id);
+                .FirstOrDefaultAsync(m => m.IdProf == IdProf && m.CcPer == CcPer);
             if (estudio == null)
             {
                 return NotFound();
@@ -142,23 +168,18 @@ namespace personapi_dotnet.Controllers
         }
 
         // POST: Estudios/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost("delete/{IdProf}/{CcPer}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int IdProf, int CcPer)
         {
-            var estudio = await _context.Estudios.FindAsync(id);
-            if (estudio != null)
-            {
-                _context.Estudios.Remove(estudio);
-            }
 
-            await _context.SaveChangesAsync();
+            await _controller.DeleteEstudio(IdProf, CcPer);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EstudioExists(int id)
+        private bool EstudioExists(int id, int cc)
         {
-            return _context.Estudios.Any(e => e.IdProf == id);
+            return _controller.EstudioExists(id, cc);
         }
     }
 }

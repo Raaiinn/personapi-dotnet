@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace personapi_dotnet.Models.Entities;
 
 public partial class Persona
 {
+
     public int Cc { get; set; }
 
     public string Nombre { get; set; } = null!;

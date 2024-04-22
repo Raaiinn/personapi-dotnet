@@ -7,51 +7,50 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using personapi_dotnet.Models.Entities;
 
-namespace personapi_dotnet.Controllers
+namespace personapi_dotnet.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApiEstudioController : ControllerBase
+    public class ApiProfesionController : ControllerBase
     {
         private readonly PersonaDbContext _context;
 
-        public ApiEstudioController(PersonaDbContext context)
+        public ApiProfesionController(PersonaDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/ApiEstudio
+        // GET: api/ApiProfesion
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Estudio>>> GetEstudios()
+        public async Task<List<Profesion>> GetProfesions()
         {
-            return await _context.Estudios.ToListAsync();
+            return await _context.Profesions.ToListAsync();
         }
 
-        // GET: api/ApiEstudio/5
+        // GET: api/ApiProfesion/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Estudio>> GetEstudio(int id)
+        public async Task<ActionResult<Profesion>> GetProfesion(int id)
         {
-            var estudio = await _context.Estudios.FindAsync(id);
+            var profesion = await _context.Profesions.FindAsync(id);
 
-            if (estudio == null)
+            if (profesion == null)
             {
                 return NotFound();
             }
-
-            return estudio;
+            return profesion;
         }
 
-        // PUT: api/ApiEstudio/5
+        // PUT: api/ApiProfesion/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEstudio(int id, Estudio estudio)
+        public async Task<IActionResult> PutProfesion(int id, Profesion profesion)
         {
-            if (id != estudio.IdProf)
+            if (id != profesion.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(estudio).State = EntityState.Modified;
+            _context.Entry(profesion).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +58,7 @@ namespace personapi_dotnet.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EstudioExists(id))
+                if (!ProfesionExists(id))
                 {
                     return NotFound();
                 }
@@ -72,19 +71,19 @@ namespace personapi_dotnet.Controllers
             return NoContent();
         }
 
-        // POST: api/ApiEstudio
+        // POST: api/ApiProfesion
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Estudio>> PostEstudio(Estudio estudio)
+        public async Task<ActionResult<Profesion>> PostProfesion(Profesion profesion)
         {
-            _context.Estudios.Add(estudio);
+            _context.Profesions.Add(profesion);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (EstudioExists(estudio.IdProf))
+                if (ProfesionExists(profesion.Id))
                 {
                     return Conflict();
                 }
@@ -94,28 +93,29 @@ namespace personapi_dotnet.Controllers
                 }
             }
 
-            return CreatedAtAction("GetEstudio", new { id = estudio.IdProf }, estudio);
+            return CreatedAtAction("GetProfesion", new { id = profesion.Id }, profesion);
         }
 
-        // DELETE: api/ApiEstudio/5
+        // DELETE: api/ApiProfesion/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEstudio(int id)
+        public async Task<IActionResult> DeleteProfesion(int id)
         {
-            var estudio = await _context.Estudios.FindAsync(id);
-            if (estudio == null)
+            var profesion = await _context.Profesions.FindAsync(id);
+            if (profesion == null)
             {
                 return NotFound();
             }
 
-            _context.Estudios.Remove(estudio);
+            _context.Profesions.Remove(profesion);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool EstudioExists(int id)
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public bool ProfesionExists(int id)
         {
-            return _context.Estudios.Any(e => e.IdProf == id);
+            return _context.Profesions.Any(e => e.Id == id);
         }
     }
 }

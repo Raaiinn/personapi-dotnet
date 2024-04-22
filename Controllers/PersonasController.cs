@@ -4,30 +4,31 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Docs.Samples;
 using Microsoft.EntityFrameworkCore;
 using personapi_dotnet.Controllers.Api;
 using personapi_dotnet.Models.Entities;
 
 namespace personapi_dotnet.Controllers
 {
-    public class ProfesionesController : Controller
+    public class PersonasController : Controller
     {
         private readonly PersonaDbContext _context;
-        private readonly ApiProfesionController _controller;
+        private readonly ApiPersonaController _controller;
 
-        public ProfesionesController(PersonaDbContext context, ApiProfesionController controller)
+        public PersonasController(PersonaDbContext context, ApiPersonaController controller)
         {
             _context = context;
             _controller = controller;
         }
 
-        // GET: Profesions
+        // GET: Personas
         public async Task<IActionResult> Index()
         {
-            return View(await _controller.GetProfesions());
+            return View(await _controller.GetPersonas());
         }
 
-        // GET: Profesions/Details/5
+        // GET: Personas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,40 +36,40 @@ namespace personapi_dotnet.Controllers
                 return NotFound();
             }
 
-            var profesion = await _context.Profesions
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (profesion == null)
+            var persona = await _context.Personas
+                .FirstOrDefaultAsync(m => m.Cc == id);
+            if (persona == null)
             {
                 return NotFound();
             }
 
-            return View(profesion);
+            return View(persona);
         }
 
-        // GET: Profesiones/Create
-        [Route("Profesiones/Create")]
+        // GET: Personas/Create
+        [Route("Personas/Create")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Profesions/Create
+        // POST: Personas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Route("Profesiones/Create")]
+        [Route("Personas/Create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nom,Des")] Profesion profesion)
+        public async Task<IActionResult> Create([Bind("Cc,Nombre,Apellido,Genero,Edad")] Persona persona)
         {
             if (ModelState.IsValid)
             {
-                await _controller.PostProfesion(profesion);
+                await _controller.PostPersona(persona);
                 return RedirectToAction(nameof(Index));
             }
-            return View(profesion);
+            return View(persona);
         }
 
-        // GET: Profesions/Edit/5
+        // GET: Personas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +77,22 @@ namespace personapi_dotnet.Controllers
                 return NotFound();
             }
 
-            var profesion = await _context.Profesions.FindAsync(id);
-            if (profesion == null)
+            var persona = await _context.Personas.FindAsync(id);
+            if (persona == null)
             {
                 return NotFound();
             }
-            return View(profesion);
+            return View(persona);
         }
 
-        // POST: Profesions/Edit/5
+        // POST: Personas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Des")] Profesion profesion)
+        public async Task<IActionResult> Edit(int id, [Bind("Cc,Nombre,Apellido,Genero,Edad")] Persona persona)
         {
-            if (id != profesion.Id)
+            if (id != persona.Cc)
             {
                 return NotFound();
             }
@@ -100,11 +101,11 @@ namespace personapi_dotnet.Controllers
             {
                 try
                 {
-                    await _controller.PutProfesion(id, profesion);
+                    await _controller.PutPersona(id, persona);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProfesionExists(profesion.Id))
+                    if (!PersonaExists(persona.Cc))
                     {
                         return NotFound();
                     }
@@ -115,10 +116,10 @@ namespace personapi_dotnet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(profesion);
+            return View(persona);
         }
 
-        // GET: Profesions/Delete/5
+        // GET: Personas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,28 +127,28 @@ namespace personapi_dotnet.Controllers
                 return NotFound();
             }
 
-            var profesion = await _context.Profesions
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (profesion == null)
+            var persona = await _context.Personas
+                .FirstOrDefaultAsync(m => m.Cc == id);
+            if (persona == null)
             {
                 return NotFound();
             }
 
-            return View(profesion);
+            return View(persona);
         }
 
-        // POST: Profesions/Delete/5
+        // POST: Personas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _controller.DeleteProfesion(id);
+            await _controller.DeletePersona(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProfesionExists(int id)
+        private bool PersonaExists(int id)
         {
-            return _controller.ProfesionExists(id);
+            return _controller.PersonaExists(id);
         }
     }
 }

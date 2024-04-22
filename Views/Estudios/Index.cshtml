@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Estudios</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Registrar estudios</a>
 </p>
 <table class="table">
     <thead>
@@ -16,15 +16,18 @@
                 @Html.DisplayNameFor(model => model.Fecha)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Univer)
+                Universidad
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CcPerNavigation)
+                Titular
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdProfNavigation)
+                Profesion
             </th>
-            <th></th>
+            <th>
+                Area
+            </th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -37,15 +40,18 @@
                 @Html.DisplayFor(modelItem => item.Univer)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CcPerNavigation.Cc)
+                @Html.DisplayFor(modelItem => item.CcPerNavigation.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdProfNavigation.Id)
+                @Html.DisplayFor(modelItem => item.IdProfNavigation.Nom)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.DisplayFor(modelItem => item.IdProfNavigation.Des)
+            </td>
+            <td>
+                    @Html.ActionLink("Editar", "Edit", "Estudios", new { IdProf = item.IdProf, CcPer = item.CcPer }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Details", "Details", new { IdProf = item.IdProf, CcPer = item.CcPer }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("Eliminar", "Delete", "Estudios",new { idProf = item.IdProf, CcPer = item.CcPer }, new { @class = "btn btn-danger" })
             </td>
         </tr>
 }
