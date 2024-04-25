@@ -67,15 +67,7 @@ namespace personapi_dotnet.Controllers
         {
             if (ModelState.IsValid)
             {
-                var estudio = new Estudio()
-                {
-                    IdProf = model.IdProf,
-                    CcPer = model.CcPer,
-                    Fecha = model.Fecha,
-                    Univer = model.Univer
-                };
-
-                await _controller.PostEstudio(estudio);
+                await _controller.PostEstudio(model);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CcPer"] = new SelectList(_context.Personas, "Cc", "Cc", model.CcPer);
@@ -118,14 +110,7 @@ namespace personapi_dotnet.Controllers
             {
                 try
                 {
-                    var estudio = new Estudio()
-                    {
-                        IdProf = model.IdProf,
-                        CcPer = model.CcPer,
-                        Fecha = model.Fecha,
-                        Univer = model.Univer
-                    };
-                    await _controller.PutEstudio(IdProf, CcPer, estudio);
+                    await _controller.PutEstudio(IdProf, CcPer, model);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

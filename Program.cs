@@ -4,7 +4,10 @@ using personapi_dotnet.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 builder.Services.AddScoped<ApiPersonaController>();
 builder.Services.AddScoped<ApiTelefonoController>();
 builder.Services.AddScoped<ApiEstudioController>();

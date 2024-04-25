@@ -68,7 +68,7 @@ namespace personapi_dotnet.Controllers.Api
                 }
             }
 
-            return NoContent();
+            return Ok(profesion);
         }
 
         // POST: api/ApiProfesion
@@ -108,8 +108,7 @@ namespace personapi_dotnet.Controllers.Api
 
             _context.Profesions.Remove(profesion);
             await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok();
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

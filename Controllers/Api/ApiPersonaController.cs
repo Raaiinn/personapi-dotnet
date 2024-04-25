@@ -11,7 +11,10 @@ namespace personapi_dotnet.Controllers.Api
     {
         private readonly PersonaDbContext _context = context;
         [HttpGet]
-        public async Task<List<Persona>> GetPersonas() => await _context.Personas.ToListAsync();
+        public async Task<List<Persona>> GetPersonas() {
+            var personaDbContext = _context.Personas.Include(e => e.Estudios).Include(e => e.Telefonos);
+            return (await personaDbContext.ToListAsync());
+        }
 
         [HttpGet("{cedula}")]
         public async Task<ActionResult<Persona>> GetPersona(int cedula)
@@ -63,7 +66,7 @@ namespace personapi_dotnet.Controllers.Api
                 }
             }
 
-            return NoContent();
+            return Ok(persona);
         }
 
         [HttpDelete("{id}")]
@@ -78,7 +81,7 @@ namespace personapi_dotnet.Controllers.Api
             _context.Personas.Remove(persona);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
         [ApiExplorerSettings(IgnoreApi = true)]
         public bool PersonaExists(int cedula)

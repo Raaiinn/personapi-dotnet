@@ -63,14 +63,8 @@ namespace personapi_dotnet.Controllers
         public async Task<IActionResult> Create([Bind("Num,Oper,Duenio")] TelefonoViewModel model)
         {
             if (ModelState.IsValid)
-            {
-                var telefono = new Telefono()
-                {
-                    Num = model.Num,
-                    Duenio = model.Duenio,
-                    Oper = model.Oper
-                };
-                await _controller.PostTelefono(telefono);
+            {         
+                await _controller.PostTelefono(model);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Duenio"] = new SelectList(_context.Personas, "Cc", "Cc", model.Duenio);
@@ -110,13 +104,7 @@ namespace personapi_dotnet.Controllers
             {
                 try
                 {
-                    var telefono = new Telefono()
-                    {
-                        Num = model.Num,
-                        Duenio = model.Duenio,
-                        Oper = model.Oper
-                    };
-                    await _controller.PutTelefono(model.Num, telefono);
+                    await _controller.PutTelefono(model.Num, model);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

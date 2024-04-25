@@ -257,3 +257,6 @@ C:\Users\braya\source\repos\personapi-dotnet\obj\Debug\net8.0\refint\personapi-d
 C:\Users\braya\source\repos\personapi-dotnet\obj\Debug\net8.0\personapi-dotnet.pdb
 C:\Users\braya\source\repos\personapi-dotnet\obj\Debug\net8.0\personapi-dotnet.genruntimeconfig.cache
 C:\Users\braya\source\repos\personapi-dotnet\obj\Debug\net8.0\ref\personapi-dotnet.dll
+C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\braya\source\repos\personapi-dotnet\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll

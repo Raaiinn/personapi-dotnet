@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using personapi_dotnet.Models.Entities;
+using personapi_dotnet.Models.ViewModels;
 
 namespace personapi_dotnet.Controllers.Api
 {
@@ -45,8 +46,15 @@ namespace personapi_dotnet.Controllers.Api
         // PUT: api/ApiTelefono/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTelefono(string id, Telefono telefono)
+        public async Task<IActionResult> PutTelefono(string id, TelefonoViewModel model)
         {
+            var telefono = new Telefono()
+            {
+                Num = model.Num,
+                Duenio = model.Duenio,
+                Oper = model.Oper
+            };
+
             if (id != telefono.Num)
             {
                 return BadRequest();
@@ -70,16 +78,22 @@ namespace personapi_dotnet.Controllers.Api
                 }
             }
 
-            return NoContent();
+            return Ok(telefono);
         }
 
         // POST: api/ApiTelefono
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Telefono>> PostTelefono(Telefono telefono)
+        public async Task<ActionResult<Telefono>> PostTelefono(TelefonoViewModel model)
         {
-            if (telefono != null)
+            if (model != null)
             {
+                var telefono = new Telefono()
+                {
+                    Num = model.Num,
+                    Duenio = model.Duenio,
+                    Oper = model.Oper
+                };
                 _context.Telefonos.Add(telefono);
                 await _context.SaveChangesAsync();
                 return Ok(telefono);
@@ -100,7 +114,7 @@ namespace personapi_dotnet.Controllers.Api
             _context.Telefonos.Remove(telefono);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]

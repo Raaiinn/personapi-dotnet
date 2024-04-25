@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using personapi_dotnet.Models.Entities;
+using personapi_dotnet.Models.ViewModels;
 
 namespace personapi_dotnet.Controllers.Api
 {
@@ -46,8 +47,16 @@ namespace personapi_dotnet.Controllers.Api
         // PUT: api/ApiEstudio/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{IdProf}/{CcPer}")]
-        public async Task<IActionResult> PutEstudio(int IdProf, int CcPer, Estudio estudio)
+        public async Task<IActionResult> PutEstudio(int IdProf, int CcPer, EstudiosViewModel model)
         {
+            var estudio = new Estudio()
+            {
+                IdProf = model.IdProf,
+                CcPer = model.CcPer,
+                Fecha = model.Fecha,
+                Univer = model.Univer
+            };
+
             if (IdProf != estudio.IdProf || CcPer !=estudio.CcPer)
             {
                 return BadRequest();
@@ -71,14 +80,22 @@ namespace personapi_dotnet.Controllers.Api
                 }
             }
 
-            return NoContent();
+            return Ok(estudio);
         }
 
         // POST: api/ApiEstudio
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Estudio>> PostEstudio(Estudio estudio)
+        public async Task<ActionResult<Estudio>> PostEstudio(EstudiosViewModel model)
         {
+            var estudio = new Estudio()
+            {
+                IdProf = model.IdProf,
+                CcPer = model.CcPer,
+                Fecha = model.Fecha,
+                Univer = model.Univer
+            };
+
             _context.Estudios.Add(estudio);
             try
             {
@@ -111,8 +128,7 @@ namespace personapi_dotnet.Controllers.Api
 
             _context.Estudios.Remove(estudio);
             await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok();
         }
         [ApiExplorerSettings(IgnoreApi = true)]
         public bool EstudioExists(int id, int cc)
